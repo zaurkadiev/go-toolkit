@@ -1,6 +1,6 @@
 # go-toolkit
 
-Generic helpers for slices, maps, optionals, and pointers in Go.
+Generic helpers for slices, maps, optionals, pointers, and concurrency primitives in Go.
 
 Small, composable building blocks for common collection workflows. Focused on
 explicit semantics and predictable behavior over clever abstractions.
@@ -11,7 +11,7 @@ explicit semantics and predictable behavior over clever abstractions.
 go get github.com/zaurkadiev/go-toolkit
 ```
 
-Requires Go 1.23+.
+Requires Go 1.25+.
 
 ## Packages
 
@@ -21,6 +21,9 @@ Requires Go 1.23+.
 | [`tmaps`](./tmaps) | Map ops, filter, merge, convert to slices |
 | [`optional`](./optional) | Typed optional for absent/zero values |
 | [`pointers`](./pointers) | Pointer construction and nil-safe dereference |
+| [`future`](./future) | Run a function in the background and await its result |
+| [`tsync`](./tsync) | Typed `Map`, `RWMap` and a context-aware `Semaphore` |
+| [`worker_pool`](./worker_pool) | Run jobs on a fixed number of workers, stop on first error |
 
 ## Examples
 
