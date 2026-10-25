@@ -15,25 +15,25 @@ func TestNilToEmpty(t *testing.T) {
 		wantNil bool
 	}{
 		{
-			// На вход приходит nil-слайс.
-			// Функция возвращает пустой, но не nil-слайс.
-			name:    "Успех,nil_слайс_становится_пустым",
+			// The input is a nil slice.
+			// The function returns an empty, non-nil slice.
+			name:    "given_nil_slice_when_normalized_then_returns_empty_slice",
 			slice:   nil,
 			want:    []int{},
 			wantNil: false,
 		},
 		{
-			// На вход приходит уже созданный пустой слайс.
-			// Функция возвращает пустой, но не nil-слайс без изменения содержимого.
-			name:    "Успех,пустой_слайс_остается_пустым",
+			// The input is an already allocated empty slice.
+			// The function returns the slice unchanged and non-nil.
+			name:    "given_empty_slice_when_normalized_then_stays_empty",
 			slice:   []int{},
 			want:    []int{},
 			wantNil: false,
 		},
 		{
-			// На вход приходит слайс со значениями.
-			// Функция возвращает те же значения и не нормализует его в пустой слайс.
-			name:    "Успех,слайс_со_значениями_не_меняется",
+			// The input is a slice with values.
+			// The function returns the same values and does not reset it to an empty slice.
+			name:    "given_slice_with_values_when_normalized_then_unchanged",
 			slice:   []int{1, 2, 3},
 			want:    []int{1, 2, 3},
 			wantNil: false,
@@ -67,9 +67,9 @@ func TestNilToEmptyNamedSlice(t *testing.T) {
 		want  namedSlice
 	}{
 		{
-			// На вход приходит nil-слайс именованного типа.
-			// Функция возвращает пустой слайс того же именованного типа.
-			name:  "Успех,именованный_nil_слайс_сохраняет_тип",
+			// The input is a nil slice of a named type.
+			// The function returns an empty slice of the same named type.
+			name:  "given_named_nil_slice_when_normalized_then_keeps_type",
 			slice: nil,
 			want:  namedSlice{},
 		},
