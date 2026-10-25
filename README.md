@@ -11,7 +11,7 @@ explicit semantics and predictable behavior over clever abstractions.
 go get github.com/zaurkadiev/go-toolkit
 ```
 
-Requires Go 1.25+.
+Requires Go 1.27+.
 
 ## Packages
 
