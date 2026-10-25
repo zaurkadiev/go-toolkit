@@ -44,7 +44,7 @@ names := tslices.Map(users, func(u User) (string, bool) {
 })
 // ["a", "b", "a"]
 
-byName := tslices.GroupBy(users, func(u User) string { return u.Name })
+byName := tslices.Group(users, func(u User) (string, User, bool) { return u.Name, u, true })
 // map[a:[{1 a} {3 a}] b:[{2 b}]]
 ```
 
@@ -69,13 +69,13 @@ filtered := tmaps.Filter(counts, func(k string, v int) bool {
 ```go
 import "github.com/zaurkadiev/go-toolkit/optional"
 
-opt := optional.Of(42)
-if v, ok := opt.Get(); ok {
-    fmt.Println(v) // 42
-}
+n := 42
+opt := optional.New(&n)
+fmt.Println(opt.Get()) // 42
 
 empty := optional.Empty[int]()
-fmt.Println(empty.OrElse(0)) // 0
+fmt.Println(empty.IsEmpty())       // true
+fmt.Println(empty.GetOrDefault(7)) // 7
 ```
 
 ### pointers
@@ -83,9 +83,44 @@ fmt.Println(empty.OrElse(0)) // 0
 ```go
 import "github.com/zaurkadiev/go-toolkit/pointers"
 
-p := pointers.To("hello")    // *string
-v := pointers.Deref(p, "")   // "hello"
-v2 := pointers.Deref[string](nil, "fallback") // "fallback"
+p := pointers.Of("hello")           // *string
+v := pointers.ValueOf(p)            // "hello"
+v2 := pointers.ValueOf[string](nil) // "" (zero value)
+```
+
+### future
+
+```go
+import "github.com/zaurkadiev/go-toolkit/future"
+
+f := future.New(func() (int, error) { return 42, nil })
+v, err := f.Await() // 42, nil
+```
+
+### tsync
+
+```go
+import "github.com/zaurkadiev/go-toolkit/tsync"
+
+var m tsync.Map[string, int]
+m.Store("a", 1)
+v, ok := m.Load("a") // 1, true
+
+sem := tsync.NewSemaphore(2)
+if err := sem.Acquire(ctx); err == nil {
+    defer sem.Release()
+}
+```
+
+### worker_pool
+
+```go
+import "github.com/zaurkadiev/go-toolkit/worker_pool"
+
+wp := worker_pool.New[int](4)
+wp.Add(func() (int, error) { return 1, nil })
+wp.Add(func() (int, error) { return 2, nil })
+res, err := wp.Run(ctx) // [1 2], nil (results in job order)
 ```
 
 ## Design
