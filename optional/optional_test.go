@@ -14,7 +14,7 @@ func TestEmpty(t *testing.T) {
 	}
 	tests := []testCase[int]{
 		{
-			name: "получение_пустого_optional",
+			name: "given_nothing_when_empty_then_returns_empty_optional",
 			want: O[int]{},
 		},
 	}
@@ -37,7 +37,7 @@ func TestOptional_GetValueOrDefault(t *testing.T) {
 	}
 	tests := []testCase[int]{
 		{
-			name: "при_пустом_optional",
+			name: "given_empty_optional_when_get_or_default_then_returns_default",
 			o:    O[int]{},
 			args: args[int]{
 				defaultValue: 5,
@@ -45,7 +45,7 @@ func TestOptional_GetValueOrDefault(t *testing.T) {
 			want: 5,
 		},
 		{
-			name: "при_не_пустом_optional",
+			name: "given_non_empty_optional_when_get_or_default_then_returns_value",
 			o: O[int]{
 				Value: func() *int {
 					i := 10
@@ -75,12 +75,12 @@ func TestOptional_IsEmpty(t *testing.T) {
 	}
 	tests := []testCase[int]{
 		{
-			name: "при_пустом_optional",
+			name: "given_empty_optional_when_is_empty_then_true",
 			o:    O[int]{},
 			want: true,
 		},
 		{
-			name: "при_не_пустом_optional",
+			name: "given_non_empty_optional_when_is_empty_then_false",
 			o: O[int]{
 				Value: func() *int {
 					i := 10
@@ -108,13 +108,13 @@ func TestOptional_Unwrap(t *testing.T) {
 	}
 	tests := []testCase[int]{
 		{
-			name:    "при_пустом_optional",
+			name:    "given_empty_optional_when_unwrap_then_error",
 			o:       O[int]{},
 			want:    0,
 			wantErr: true,
 		},
 		{
-			name: "при_не_пустом_optional",
+			name: "given_non_empty_optional_when_unwrap_then_value",
 			o: O[int]{
 				Value: func() *int {
 					i := 10
@@ -154,7 +154,7 @@ func TestNew(t *testing.T) {
 	}()
 	tests := []testCase[int]{
 		{
-			name: "успешное_получение_optional",
+			name: "given_value_when_new_then_returns_optional_with_value",
 			args: args[int]{
 				value: valPtr,
 			},
@@ -182,16 +182,16 @@ func TestOptional_String(t *testing.T) {
 	}()
 	tests := []testCase[string]{
 		{
-			// Optional не содержит значения.
-			// Метод должен вернуть явный маркер пустоты, чтобы лог не выглядел как pointer dump.
-			name: "при_пустом_optional",
+			// The optional holds no value.
+			// The method must return an explicit empty marker so logs do not look like a pointer dump.
+			name: "given_empty_optional_when_string_then_empty_marker",
 			o:    O[string]{},
 			want: "<empty>",
 		},
 		{
-			// Optional содержит строку.
-			// Метод должен вернуть само значение без обертки вокруг поля Value.
-			name: "при_не_пустом_optional",
+			// The optional holds a string.
+			// The method must return the value itself without wrapping the Value field.
+			name: "given_non_empty_optional_when_string_then_value",
 			o:    O[string]{Value: valPtr},
 			want: "cluster-1",
 		},
@@ -212,17 +212,17 @@ func TestMap(t *testing.T) {
 		expected O[string]
 	}{
 		{
-			// Входное значение присутствует. Функция применяется к значению.
-			// Результат содержит преобразованное значение.
-			name:     "успех_при_непустом_optional",
+			// The input value is present. The function is applied to it.
+			// The result holds the transformed value.
+			name:     "given_non_empty_optional_when_map_then_mapped_value",
 			input:    New(ptr(42)),
 			f:        func(n int) string { return "42" },
 			expected: New(ptr("42")),
 		},
 		{
-			// Входное значение отсутствует. Функция не вызывается.
-			// Результат — пустой optional.
-			name:     "пустой_результат_при_пустом_входе",
+			// The input value is absent. The function is not called.
+			// The result is an empty optional.
+			name:     "given_empty_optional_when_map_then_empty_result",
 			input:    Empty[int](),
 			f:        func(n int) string { return "should not be called" },
 			expected: Empty[string](),
