@@ -15,25 +15,25 @@ func TestNilToEmpty(t *testing.T) {
 		wantNil bool
 	}{
 		{
-			// На вход приходит nil-мапа.
-			// Функция возвращает пустую, но не nil-мапу.
-			name:    "Успех,nil_мапа_становится_пустой",
+			// The input is a nil map.
+			// The function returns an empty, non-nil map.
+			name:    "given_nil_map_when_normalized_then_returns_empty_map",
 			m:       nil,
 			want:    map[string]int{},
 			wantNil: false,
 		},
 		{
-			// На вход приходит уже созданная пустая мапа.
-			// Функция возвращает пустую, но не nil-мапу без изменения содержимого.
-			name:    "Успех,пустая_мапа_остается_пустой",
+			// The input is an already allocated empty map.
+			// The function returns the map unchanged and non-nil.
+			name:    "given_empty_map_when_normalized_then_stays_empty",
 			m:       map[string]int{},
 			want:    map[string]int{},
 			wantNil: false,
 		},
 		{
-			// На вход приходит мапа со значениями.
-			// Функция возвращает те же значения и не нормализует ее в пустую мапу.
-			name:    "Успех,мапа_со_значениями_не_меняется",
+			// The input is a map with values.
+			// The function returns the same values and does not reset it to an empty map.
+			name:    "given_map_with_values_when_normalized_then_unchanged",
 			m:       map[string]int{"first": 1, "second": 2},
 			want:    map[string]int{"first": 1, "second": 2},
 			wantNil: false,
@@ -67,9 +67,9 @@ func TestNilToEmptyNamedMap(t *testing.T) {
 		want namedMap
 	}{
 		{
-			// На вход приходит nil-мапа именованного типа.
-			// Функция возвращает пустую мапу того же именованного типа.
-			name: "Успех,именованная_nil_мапа_сохраняет_тип",
+			// The input is a nil map of a named type.
+			// The function returns an empty map of the same named type.
+			name: "given_named_nil_map_when_normalized_then_keeps_type",
 			m:    nil,
 			want: namedMap{},
 		},

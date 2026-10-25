@@ -87,11 +87,11 @@ func (wp *impl[T]) Run(ctx context.Context) ([]T, error) {
 	}
 
 	result := make([]T, len(wp.jobs))
-	// errgroup отменяет ctx после записи первой ошибки, поэтому Run возвращает ошибку задания, а не context.Canceled
+	// errgroup cancels ctx after the first error is recorded, so Run returns the job error rather than context.Canceled
 	eg, ctx := errgroup.WithContext(ctx)
 	jobChan := make(chan int)
 
-	// Создаем воркеры
+	// Start the workers
 	for i := 0; i < wp.poolSize; i++ {
 		eg.Go(func() error {
 			for {
@@ -100,21 +100,21 @@ func (wp *impl[T]) Run(ctx context.Context) ([]T, error) {
 					return ctx.Err()
 				case idx, ok := <-jobChan:
 					if !ok {
-						// если jobChan закрыт, завершаем воркер
+						// if jobChan is closed, the worker exits
 						return nil
 					}
 					res, err := call(wp.jobs[idx])
 					if err != nil {
 						return err
 					}
-					// каждый воркер пишет только в свой индекс, eg.Wait синхронизирует чтение
+					// each worker writes only to its own index; eg.Wait synchronizes the read
 					result[idx] = res
 				}
 			}
 		})
 	}
 
-	// Горутина отправляет индексы заданий в воркеры в канал jobChan
+	// A goroutine sends job indexes to the workers through jobChan
 	eg.Go(func() error {
 		defer close(jobChan)
 		for idx := range wp.jobs {
@@ -212,10 +212,10 @@ func (wp *simpleImpl) Run(ctx context.Context) error {
 	}
 
 	jobChan := make(chan func() error)
-	// errgroup отменяет ctx после записи первой ошибки, поэтому Run возвращает ошибку задания, а не context.Canceled
+	// errgroup cancels ctx after the first error is recorded, so Run returns the job error rather than context.Canceled
 	eg, ctx := errgroup.WithContext(ctx)
 
-	// Создаем воркеры
+	// Start the workers
 	for i := 0; i < wp.poolSize; i++ {
 		eg.Go(func() error {
 			for {
@@ -224,7 +224,7 @@ func (wp *simpleImpl) Run(ctx context.Context) error {
 					return ctx.Err()
 				case job, ok := <-jobChan:
 					if !ok {
-						// если jobChan закрыт, завершаем воркер
+						// if jobChan is closed, the worker exits
 						return nil
 					}
 					if _, err := call(func() (struct{}, error) { return struct{}{}, job() }); err != nil {
@@ -235,7 +235,7 @@ func (wp *simpleImpl) Run(ctx context.Context) error {
 		})
 	}
 
-	// Горутина отправляет задания в воркеры в канал jobChan
+	// A goroutine sends jobs to the workers through jobChan
 	eg.Go(func() error {
 		defer close(jobChan)
 		for _, job := range wp.jobs {
